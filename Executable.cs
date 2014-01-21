@@ -43,7 +43,7 @@ namespace PEUtility
     {
         private MemoryMappedFile _file;
         private ImageNtHeaders32 _ntHeaders32;
-        //private ImageNtHeaders64 _ntHeaders64;
+        private ImageNtHeaders64 _ntHeaders64;
         private ImageSectionHeader[] _sections;
 
         public ImportEntry[] ImportEntries;
@@ -133,12 +133,11 @@ namespace PEUtility
                 return;
             }
 
-            if (_ntHeaders32.OptionalHeader.Magic == ImageOptionalHeaderMagic.Header64)
+            if (_ntHeaders32.Is64Bit)
             {
-                /*
                 try
                 {
-                    var accessor = _file.CreateViewAccessor(header.LfaNewHeader, Marshal.SizeOf(typeof(ImageOptionalHeader64)), MemoryMappedFileAccess.Read);
+                    var accessor = _file.CreateViewAccessor(header.LfaNewHeader, Marshal.SizeOf(typeof(ImageNtHeaders64)), MemoryMappedFileAccess.Read);
                     accessor.Read(0, out _ntHeaders64);
                     accessor.Dispose();
                 }
@@ -147,24 +146,40 @@ namespace PEUtility
                     MessageBox.Show(e.Message, "NT Headers Header Exception");
                     return;
                 }
-                */
-                MessageBox.Show("64-bit executables not yet supported", "Error");
-                return;
             }
 
             // Read sections
-            _sections = new ImageSectionHeader[_ntHeaders32.FileHeader.NumberOfSections];
-            try
+            if (_ntHeaders32.Is64Bit)
             {
-                var accessor = _file.CreateViewAccessor(header.LfaNewHeader + Marshal.SizeOf(typeof(ImageNtHeaders32)),
-                    _ntHeaders32.FileHeader.NumberOfSections * Marshal.SizeOf(typeof(ImageSectionHeader)), MemoryMappedFileAccess.Read);
-                accessor.ReadArray(0, _sections, 0, _ntHeaders32.FileHeader.NumberOfSections);
-                accessor.Dispose();
+                _sections = new ImageSectionHeader[_ntHeaders64.FileHeader.NumberOfSections];
+                try
+                {
+                    var accessor = _file.CreateViewAccessor(header.LfaNewHeader + Marshal.SizeOf(typeof(ImageNtHeaders64)),
+                        _ntHeaders64.FileHeader.NumberOfSections * Marshal.SizeOf(typeof(ImageSectionHeader)), MemoryMappedFileAccess.Read);
+                    accessor.ReadArray(0, _sections, 0, _ntHeaders64.FileHeader.NumberOfSections);
+                    accessor.Dispose();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "Section Read Exception");
+                    throw;
+                }
             }
-            catch (Exception e)
+            else
             {
-                MessageBox.Show(e.Message, "Section Read Exception");
-                throw;
+                _sections = new ImageSectionHeader[_ntHeaders32.FileHeader.NumberOfSections];
+                try
+                {
+                    var accessor = _file.CreateViewAccessor(header.LfaNewHeader + Marshal.SizeOf(typeof(ImageNtHeaders32)),
+                        _ntHeaders32.FileHeader.NumberOfSections * Marshal.SizeOf(typeof(ImageSectionHeader)), MemoryMappedFileAccess.Read);
+                    accessor.ReadArray(0, _sections, 0, _ntHeaders32.FileHeader.NumberOfSections);
+                    accessor.Dispose();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "Section Read Exception");
+                    throw;
+                }
             }
 
             ReadImportTable();
@@ -175,7 +190,15 @@ namespace PEUtility
 
         private void ReadImportTable()
         {
-            var importTable = _ntHeaders32.OptionalHeader.ImportTable.VirtualAddress;
+            uint importTable;
+            if (_ntHeaders32.Is64Bit)
+            {
+                importTable = _ntHeaders64.OptionalHeader.ImportTable.VirtualAddress;
+            }
+            else
+            {
+                importTable = _ntHeaders32.OptionalHeader.ImportTable.VirtualAddress;
+            }
             if (importTable == 0)
             {
                 ImportEntries = new ImportEntry[0];
@@ -227,7 +250,15 @@ namespace PEUtility
 
         private void ReadExportTable()
         {
-            var exportTable = _ntHeaders32.OptionalHeader.ExportTable.VirtualAddress;
+            uint exportTable;
+            if (_ntHeaders32.Is64Bit)
+            {
+                exportTable = _ntHeaders64.OptionalHeader.ExportTable.VirtualAddress;
+            }
+            else
+            {
+                exportTable = _ntHeaders32.OptionalHeader.ExportTable.VirtualAddress;
+            }
             if (exportTable == 0)
             {
                 ExportEntries = new ExportEntry[0];

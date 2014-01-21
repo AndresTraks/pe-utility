@@ -140,6 +140,56 @@ namespace PEUtility
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct ImageOptionalHeader64
+    {
+        public ImageOptionalHeaderMagic Magic;
+        public byte MajorLinkerVersion;
+        public byte MinorLinkerVersion;
+        public UInt32 SizeOfCode;
+        public UInt32 SizeOfInitializedData;
+        public UInt32 SizeOfUninitializedData;
+        public UInt32 AddressOfEntryPoint;
+        public UInt32 BaseOfCode;
+        public UInt64 ImageBase;
+        public UInt32 SectionAlignment;
+        public UInt32 FileAlignment;
+        public UInt16 MajorOperatingSystemVersion;
+        public UInt16 MinorOperatingSystemVersion;
+        public UInt16 MajorImageVersion;
+        public UInt16 MinorImageVersion;
+        public UInt16 MajorSubsystemVersion;
+        public UInt16 MinorSubsystemVersion;
+        public UInt32 Win32VersionValue;
+        public UInt32 SizeOfImage;
+        public UInt32 SizeOfHeaders;
+        public UInt32 CheckSum;
+        public Subsystem Subsystem;
+        public DllCharacteristics DllCharacteristics;
+        public UInt64 SizeOfStackReserve;
+        public UInt64 SizeOfStackCommit;
+        public UInt64 SizeOfHeapReserve;
+        public UInt64 SizeOfHeapCommit;
+        public UInt32 LoaderFlags;
+        public UInt32 NumberOfRvaAndSizes;
+        public ImageDataDirectory ExportTable;
+        public ImageDataDirectory ImportTable;
+        public ImageDataDirectory ResourceTable;
+        public ImageDataDirectory ExceptionTable;
+        public ImageDataDirectory CertificateTable;
+        public ImageDataDirectory BaseRelocationTable;
+        public ImageDataDirectory Debug;
+        public ImageDataDirectory Architecture;
+        public ImageDataDirectory GlobalPtr;
+        public ImageDataDirectory TLSTable;
+        public ImageDataDirectory LoadConfigTable;
+        public ImageDataDirectory BoundImport;
+        public ImageDataDirectory IAT;
+        public ImageDataDirectory DelayImportDescriptor;
+        public ImageDataDirectory CLRRuntimeHeader;
+        public ImageDataDirectory Reserved;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct ImageNtHeaders32
     {
         public UInt32 Signature;
@@ -150,6 +200,28 @@ namespace PEUtility
         {
             get { return Signature == 0x4550 &&
                 (OptionalHeader.Magic == ImageOptionalHeaderMagic.Header32 || OptionalHeader.Magic == ImageOptionalHeaderMagic.Header64);
+            }
+        }
+
+        public bool Is64Bit
+        {
+            get { return OptionalHeader.Magic == ImageOptionalHeaderMagic.Header64; }
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ImageNtHeaders64
+    {
+        public UInt32 Signature;
+        public ImageFileHeader FileHeader;
+        public ImageOptionalHeader64 OptionalHeader;
+
+        public bool IsValid
+        {
+            get
+            {
+                return Signature == 0x4550 &&
+                    (OptionalHeader.Magic == ImageOptionalHeaderMagic.Header32 || OptionalHeader.Magic == ImageOptionalHeaderMagic.Header64);
             }
         }
     }
