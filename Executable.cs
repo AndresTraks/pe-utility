@@ -252,21 +252,19 @@ namespace PEUtility
                     ulong thunk = _ntHeaders32.Is64Bit ? ReadUInt64(entryAddress) : ReadUInt32(entryAddress);
                     while (thunk != 0)
                     {
-                        /*
                         var hintAccessor = _file.CreateViewAccessor(entryAddress, sizeof(UInt16), MemoryMappedFileAccess.Read);
                         UInt16 hint = hintAccessor.ReadUInt16(0);
                         hintAccessor.Dispose();
-                        */
 
                         if ((thunk & 0x8000000000000000) != 0)
                         {
                             thunk &= 0x7FFFFFFFFFFFFFFF;
-                            importEntry.Entries.Add(thunk.ToString());
+                            importEntry.Entries.Add("hint: " + hint.ToString() + ", thunk: " + thunk.ToString());
                         }
                         else if ((thunk & 0x80000000) != 0)
                         {
                             thunk &= 0x7FFFFFFF;
-                            importEntry.Entries.Add(thunk.ToString());
+                            importEntry.Entries.Add("hint: " + hint.ToString() + ", thunk: " + thunk.ToString());
                         }
                         else
                         {

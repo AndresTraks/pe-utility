@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using System.Drawing;
 
 namespace PEUtility
 {
@@ -88,12 +89,33 @@ namespace PEUtility
 
         void importSearchBox_TextChanged(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(importSearchBox.Text))
+            {
+                ShowAllImports();
+                return;
+            }
+
             importsList.Nodes.Clear();
             foreach (var importEntry in _executable.ImportEntries)
             {
-                if (importEntry.Name.IndexOf(importSearchBox.Text, StringComparison.OrdinalIgnoreCase) != -1)
+                var node = importsList.Nodes.Add(importEntry.Name);
+                bool hasMatch = false;
+                foreach (var entry in importEntry.Entries)
                 {
-                    importsList.Nodes.Add(importEntry.Name);
+                    if (entry.IndexOf(importSearchBox.Text, StringComparison.OrdinalIgnoreCase) != -1)
+                    {
+                        node.Nodes.Add(entry);
+                        hasMatch = true;
+                    }
+                }
+                if (hasMatch)
+                {
+                    node.ForeColor = Color.Black;
+                    node.Expand();
+                }
+                else
+                {
+                    node.ForeColor = Color.Gray;
                 }
             }
         }
@@ -134,6 +156,19 @@ namespace PEUtility
             }
         }
 
+        private void ShowAllImports()
+        {
+            importsList.Nodes.Clear();
+            foreach (var importEntry in _executable.ImportEntries)
+            {
+                var node = importsList.Nodes.Add(importEntry.Name);
+                foreach (var entry in importEntry.Entries)
+                {
+                    node.Nodes.Add(entry);
+                }
+            }
+        }
+
         private void OpenFile(string filename)
         {
             if (_executable != null)
@@ -148,15 +183,7 @@ namespace PEUtility
 
             StoreRecentFile();
 
-            importsList.Nodes.Clear();
-            foreach (var importEntry in _executable.ImportEntries)
-            {
-                var node = importsList.Nodes.Add(importEntry.Name);
-                foreach (var entry in importEntry.Entries)
-                {
-                    node.Nodes.Add(entry);
-                }
-            }
+            ShowAllImports();
             importSearchBox.Enabled = true;
 
             exportsList.Clear();
