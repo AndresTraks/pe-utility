@@ -9,11 +9,12 @@ namespace PEUtility
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+            string argument = (args.Length == 1) ? args[0] : null;
+            Application.Run(new MainWindow(argument));
         }
     }
 }

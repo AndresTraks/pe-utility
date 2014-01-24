@@ -11,7 +11,7 @@ namespace PEUtility
         private Executable _executable;
         private const int NumRecentFiles = 10;
 
-        public MainWindow()
+        public MainWindow(string argument)
         {
             InitializeComponent();
 
@@ -22,6 +22,11 @@ namespace PEUtility
             exportSearchBox.TextChanged += exportSearchBox_TextChanged;
 
             ReadRecentFiles();
+
+            if (argument != null)
+            {
+                OpenFile(argument);
+            }
         }
 
         private void ReadRecentFiles()
