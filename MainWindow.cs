@@ -21,8 +21,10 @@ namespace PEUtility
             importSearchBox.TextChanged += importSearchBox_TextChanged;
             exportSearchBox.TextChanged += exportSearchBox_TextChanged;
 
-            ReadRecentFiles();
+            importsList.MouseUp += importsList_MouseUp;
+            exportsList.MouseUp += exportsList_MouseUp;
 
+            ReadRecentFiles();
             if (argument != null)
             {
                 OpenFile(argument);
@@ -197,6 +199,44 @@ namespace PEUtility
                 exportsList.Items.Add(exportEntry.Name);
             }
             exportSearchBox.Enabled = true;
+        }
+
+        void importsList_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                importsList.SelectedNode = importsList.GetNodeAt(e.X, e.Y);
+
+                if (importsList.SelectedNode != null)
+                {
+                    treeContextMenu.Tag = importsList.SelectedNode;
+                    treeContextMenu.Show(importsList, e.Location);
+                }
+            }
+        }
+
+        void exportsList_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (exportsList.FocusedItem != null)
+                {
+                    treeContextMenu.Tag = exportsList.FocusedItem;
+                    treeContextMenu.Show(exportsList, e.Location);
+                }
+            }
+        }
+
+        private void copyNameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeContextMenu.Tag is ListViewItem)
+            {
+                Clipboard.SetText((treeContextMenu.Tag as ListViewItem).Text);
+            }
+            else if (treeContextMenu.Tag is TreeNode)
+            {
+                Clipboard.SetText((treeContextMenu.Tag as TreeNode).Text);
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

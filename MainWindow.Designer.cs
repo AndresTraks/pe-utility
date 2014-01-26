@@ -46,10 +46,13 @@
             this.exportSearchBox = new System.Windows.Forms.TextBox();
             this.exportsList = new System.Windows.Forms.ListView();
             this.tabControlImageList = new System.Windows.Forms.ImageList(this.components);
+            this.treeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.importsTab1.SuspendLayout();
             this.exportsTab.SuspendLayout();
+            this.treeContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -208,6 +211,20 @@
             this.tabControlImageList.Images.SetKeyName(0, "imports.png");
             this.tabControlImageList.Images.SetKeyName(1, "exports.png");
             // 
+            // importsContextMenu
+            // 
+            this.treeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyNameToolStripMenuItem});
+            this.treeContextMenu.Name = "importsContextMenu";
+            this.treeContextMenu.Size = new System.Drawing.Size(153, 48);
+            // 
+            // copyNameToolStripMenuItem
+            // 
+            this.copyNameToolStripMenuItem.Name = "copyNameToolStripMenuItem";
+            this.copyNameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyNameToolStripMenuItem.Text = "Copy name";
+            this.copyNameToolStripMenuItem.Click += new System.EventHandler(this.copyNameToolStripMenuItem_Click);
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -226,6 +243,7 @@
             this.importsTab1.PerformLayout();
             this.exportsTab.ResumeLayout(false);
             this.exportsTab.PerformLayout();
+            this.treeContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -249,6 +267,8 @@
         private System.Windows.Forms.Label filterLabel2;
         private System.Windows.Forms.TextBox importSearchBox;
         private System.Windows.Forms.TreeView importsList;
+        private System.Windows.Forms.ContextMenuStrip treeContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem copyNameToolStripMenuItem;
     }
 }
 
