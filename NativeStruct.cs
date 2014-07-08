@@ -264,16 +264,20 @@ namespace PEUtility
             get
             {
                 var name = new char[8];
-                int i, length = 0;
+                int i;
                 for (i = 0; i < 8; i++)
                 {
                     name[i] = (char)(Name >> (i << 3) & 0xffUL);
                     if (name[i] == 0)
                         break;
                 }
-                length = i;
-                return new string(name, 0, length);
+                return new string(name, 0, i);
             }
+        }
+
+        public override string ToString()
+        {
+            return Section + " RVA: " + string.Format("0x{0:X}", VirtualAddress);
         }
     }
 
@@ -308,15 +312,14 @@ namespace PEUtility
             get
             {
                 var name = new char[4];
-                int i, length = 0;
+                int i;
                 for (i = 0; i < 4; i++)
                 {
                     name[i] = (char)(Name >> (i << 3) & 0xffUL);
                     if (name[i] == 0)
                         break;
                 }
-                length = i;
-                return new string(name, 0, length);
+                return new string(name, 0, i);
             }
         }
     }

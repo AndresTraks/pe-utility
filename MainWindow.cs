@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Drawing;
@@ -77,20 +78,21 @@ namespace PEUtility
             }
 
             // Rewrite registry entries
-            var key = Registry.CurrentUser.CreateSubKey("Software\\WinDisasm");
-            int i;
-            for (i = 1; i <= NumRecentFiles; i++)
+            using (var key = Registry.CurrentUser.CreateSubKey("Software\\WinDisasm"))
             {
-                key.DeleteValue("Recent" + i, false);
+                int i;
+                for (i = 1; i <= NumRecentFiles; i++)
+                {
+                    key.DeleteValue("Recent" + i, false);
+                }
+                i = 1;
+                foreach (var recent in recentToolStripMenuItem.DropDownItems)
+                {
+                    key.SetValue("Recent" + i, recent);
+                    i++;
+                }
             }
-            i = 1;
-            foreach (var recent in recentToolStripMenuItem.DropDownItems)
-            {
-                key.SetValue("Recent" + i, recent);
-                i++;
-            }
-            key.Close();
-
+            
             recentToolStripMenuItem.Enabled = true;
         }
 
@@ -130,6 +132,8 @@ namespace PEUtility
         void exportSearchBox_TextChanged(object sender, EventArgs e)
         {
             exportsList.Clear();
+            //var entries = _executable.ExportEntries.Where(i => i.Name.IndexOf(exportSearchBox.Text, StringComparison.OrdinalIgnoreCase) != -1);
+            //exportsList.Items.AddRange(entries.Select(i => new ListViewItem(i.Name)).ToArray());
             foreach (var exportEntry in _executable.ExportEntries)
             {
                 if (exportEntry.Name.IndexOf(exportSearchBox.Text, StringComparison.OrdinalIgnoreCase) != -1)

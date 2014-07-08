@@ -59,11 +59,11 @@ namespace PEUtility
         private String ReadStringFromFile(long rva)
         {
             int section = GetRvaSection(rva);
-            var accessor = GetSectionAccessor(section);
-            var position = DecodeRva(rva) - _sections[section].PointerToRawData;
-            string value = ReadStringFromFile(accessor, position);
-            accessor.Dispose();
-            return value;
+            using (var accessor = GetSectionAccessor(section))
+            {
+                var position = DecodeRva(rva) - _sections[section].PointerToRawData;
+                return ReadStringFromFile(accessor, position);
+            }
         }
 
         private String ReadStringFromFile(MemoryMappedViewAccessor accessor, long position)
@@ -84,26 +84,26 @@ namespace PEUtility
 
         private UInt32 ReadUInt32(long address)
         {
-            var accessor = _file.CreateViewAccessor(address, sizeof(UInt32), MemoryMappedFileAccess.Read);
-            var value = accessor.ReadUInt32(0);
-            accessor.Dispose();
-            return value;
+            using (var accessor = _file.CreateViewAccessor(address, sizeof (UInt32), MemoryMappedFileAccess.Read))
+            {
+                return accessor.ReadUInt32(0);
+            }
         }
 
         private long ReadInt64(long address)
         {
-            var accessor = _file.CreateViewAccessor(address, sizeof(long), MemoryMappedFileAccess.Read);
-            var value = accessor.ReadInt64(0);
-            accessor.Dispose();
-            return value;
+            using (var accessor = _file.CreateViewAccessor(address, sizeof (long), MemoryMappedFileAccess.Read))
+            {
+                return accessor.ReadInt64(0);
+            }
         }
 
         private ulong ReadUInt64(long address)
         {
-            var accessor = _file.CreateViewAccessor(address, sizeof(ulong), MemoryMappedFileAccess.Read);
-            var value = accessor.ReadUInt64(0);
-            accessor.Dispose();
-            return value;
+            using (var accessor = _file.CreateViewAccessor(address, sizeof(ulong), MemoryMappedFileAccess.Read))
+            {
+                return accessor.ReadUInt64(0);
+            }
         }
 
         public Executable(string filename)
@@ -230,10 +230,10 @@ namespace PEUtility
             }
 
             importTable = DecodeRva(importTable);
-            ImageImportDescriptor importDescriptor;
             try
             {
                 var accessor = _file.CreateViewAccessor(importTable, Marshal.SizeOf(typeof(ImageImportDescriptor)), MemoryMappedFileAccess.Read);
+                ImageImportDescriptor importDescriptor;
                 accessor.Read(0, out importDescriptor);
                 accessor.Dispose();
 
@@ -321,8 +321,8 @@ namespace PEUtility
                 throw;
             }
 
-            var addressOfNames = DecodeRva(exportDirectory.AddressOfNames);
-            var namesSection = GetRvaSection(addressOfNames);
+            var namesSection = GetRvaSection(exportDirectory.AddressOfNames);
+            var addressOfNames = DecodeRva(exportDirectory.AddressOfNames, namesSection);
             uint numNames = exportDirectory.NumberOfNames;
             var exportEntries = new List<ExportEntry>();
             try
@@ -368,7 +368,12 @@ namespace PEUtility
             int section = GetRvaSection(rva);
             if (section == -1)
                 return 0;
-            return (long)_sections[section].PointerToRawData + rva - + (long)_sections[section].VirtualAddress;
+            return DecodeRva(rva, section);
+        }
+
+        private long DecodeRva(long rva, int section)
+        {
+            return (long)_sections[section].PointerToRawData + (rva - _sections[section].VirtualAddress);
         }
 
         internal void Close()
