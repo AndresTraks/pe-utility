@@ -37,7 +37,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.importsTab1 = new System.Windows.Forms.TabPage();
+            this.infoTab = new System.Windows.Forms.TabPage();
+            this.importsTab = new System.Windows.Forms.TabPage();
             this.importsList = new System.Windows.Forms.TreeView();
             this.filterLabel2 = new System.Windows.Forms.Label();
             this.importSearchBox = new System.Windows.Forms.TextBox();
@@ -48,9 +49,12 @@
             this.tabControlImageList = new System.Windows.Forms.ImageList(this.components);
             this.treeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.typeLabel = new System.Windows.Forms.Label();
+            this.typeValueLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
-            this.importsTab1.SuspendLayout();
+            this.infoTab.SuspendLayout();
+            this.importsTab.SuspendLayout();
             this.exportsTab.SuspendLayout();
             this.treeContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -107,7 +111,8 @@
             this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl.Controls.Add(this.importsTab1);
+            this.tabControl.Controls.Add(this.infoTab);
+            this.tabControl.Controls.Add(this.importsTab);
             this.tabControl.Controls.Add(this.exportsTab);
             this.tabControl.ImageList = this.tabControlImageList;
             this.tabControl.Location = new System.Drawing.Point(0, 27);
@@ -116,19 +121,32 @@
             this.tabControl.Size = new System.Drawing.Size(529, 334);
             this.tabControl.TabIndex = 1;
             // 
-            // importsTab1
+            // infoTab
             // 
-            this.importsTab1.Controls.Add(this.importsList);
-            this.importsTab1.Controls.Add(this.filterLabel2);
-            this.importsTab1.Controls.Add(this.importSearchBox);
-            this.importsTab1.ImageKey = "imports.png";
-            this.importsTab1.Location = new System.Drawing.Point(4, 27);
-            this.importsTab1.Name = "importsTab1";
-            this.importsTab1.Padding = new System.Windows.Forms.Padding(3);
-            this.importsTab1.Size = new System.Drawing.Size(521, 303);
-            this.importsTab1.TabIndex = 0;
-            this.importsTab1.Text = "Imports";
-            this.importsTab1.UseVisualStyleBackColor = true;
+            this.infoTab.Controls.Add(this.typeValueLabel);
+            this.infoTab.Controls.Add(this.typeLabel);
+            this.infoTab.ImageKey = "info.png";
+            this.infoTab.Location = new System.Drawing.Point(4, 27);
+            this.infoTab.Name = "infoTab";
+            this.infoTab.Padding = new System.Windows.Forms.Padding(3);
+            this.infoTab.Size = new System.Drawing.Size(521, 303);
+            this.infoTab.TabIndex = 2;
+            this.infoTab.Text = "Info";
+            this.infoTab.UseVisualStyleBackColor = true;
+            // 
+            // importsTab
+            // 
+            this.importsTab.Controls.Add(this.importsList);
+            this.importsTab.Controls.Add(this.filterLabel2);
+            this.importsTab.Controls.Add(this.importSearchBox);
+            this.importsTab.ImageKey = "imports.png";
+            this.importsTab.Location = new System.Drawing.Point(4, 27);
+            this.importsTab.Name = "importsTab";
+            this.importsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.importsTab.Size = new System.Drawing.Size(521, 303);
+            this.importsTab.TabIndex = 0;
+            this.importsTab.Text = "Imports";
+            this.importsTab.UseVisualStyleBackColor = true;
             // 
             // importsList
             // 
@@ -208,22 +226,40 @@
             // 
             this.tabControlImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("tabControlImageList.ImageStream")));
             this.tabControlImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.tabControlImageList.Images.SetKeyName(0, "imports.png");
-            this.tabControlImageList.Images.SetKeyName(1, "exports.png");
+            this.tabControlImageList.Images.SetKeyName(0, "info.png");
+            this.tabControlImageList.Images.SetKeyName(1, "imports.png");
+            this.tabControlImageList.Images.SetKeyName(2, "exports.png");
             // 
-            // importsContextMenu
+            // treeContextMenu
             // 
             this.treeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyNameToolStripMenuItem});
             this.treeContextMenu.Name = "importsContextMenu";
-            this.treeContextMenu.Size = new System.Drawing.Size(153, 48);
+            this.treeContextMenu.Size = new System.Drawing.Size(136, 26);
             // 
             // copyNameToolStripMenuItem
             // 
             this.copyNameToolStripMenuItem.Name = "copyNameToolStripMenuItem";
-            this.copyNameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyNameToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.copyNameToolStripMenuItem.Text = "Copy name";
             this.copyNameToolStripMenuItem.Click += new System.EventHandler(this.copyNameToolStripMenuItem_Click);
+            // 
+            // typeLabel
+            // 
+            this.typeLabel.AutoSize = true;
+            this.typeLabel.Location = new System.Drawing.Point(6, 10);
+            this.typeLabel.Name = "typeLabel";
+            this.typeLabel.Size = new System.Drawing.Size(31, 13);
+            this.typeLabel.TabIndex = 0;
+            this.typeLabel.Text = "Type";
+            // 
+            // typeValueLabel
+            // 
+            this.typeValueLabel.AutoSize = true;
+            this.typeValueLabel.Location = new System.Drawing.Point(189, 7);
+            this.typeValueLabel.Name = "typeValueLabel";
+            this.typeValueLabel.Size = new System.Drawing.Size(0, 13);
+            this.typeValueLabel.TabIndex = 1;
             // 
             // MainWindow
             // 
@@ -239,8 +275,10 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl.ResumeLayout(false);
-            this.importsTab1.ResumeLayout(false);
-            this.importsTab1.PerformLayout();
+            this.infoTab.ResumeLayout(false);
+            this.infoTab.PerformLayout();
+            this.importsTab.ResumeLayout(false);
+            this.importsTab.PerformLayout();
             this.exportsTab.ResumeLayout(false);
             this.exportsTab.PerformLayout();
             this.treeContextMenu.ResumeLayout(false);
@@ -257,7 +295,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage importsTab1;
+        private System.Windows.Forms.TabPage importsTab;
         private System.Windows.Forms.TabPage exportsTab;
         private System.Windows.Forms.ImageList tabControlImageList;
         private System.Windows.Forms.ListView exportsList;
@@ -269,6 +307,9 @@
         private System.Windows.Forms.TreeView importsList;
         private System.Windows.Forms.ContextMenuStrip treeContextMenu;
         private System.Windows.Forms.ToolStripMenuItem copyNameToolStripMenuItem;
+        private System.Windows.Forms.TabPage infoTab;
+        private System.Windows.Forms.Label typeValueLabel;
+        private System.Windows.Forms.Label typeLabel;
     }
 }
 

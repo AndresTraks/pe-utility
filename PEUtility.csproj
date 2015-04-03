@@ -62,6 +62,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\info.png" />
     <Content Include="Resources\exports.png" />
     <Content Include="Resources\imports.png" />
   </ItemGroup>

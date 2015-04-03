@@ -194,9 +194,14 @@ namespace PEUtility
 
             StoreRecentFile();
 
+            // Info
+            typeValueLabel.Text = _executable.Type;
+
+            // Imports
             ShowAllImports();
             importSearchBox.Enabled = true;
 
+            // Exports
             exportsList.Clear();
             foreach (var exportEntry in _executable.ExportEntries)
             {

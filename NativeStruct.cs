@@ -323,4 +323,32 @@ namespace PEUtility
             }
         }
     }
+
+    [Flags]
+    public enum ComImageFlags : uint
+    {
+        ILOnly = 1,
+        _32BitRequired = 2,
+        ILLibrary = 4,
+        StrongNameSigned = 8,
+        NativeEntryPoint = 0x10,
+        TrackDebugData = 0x10000,
+        _32BitPreferred = 0x20000,
+    }
+
+    public struct ImageCor20Header
+    {
+        public UInt32 cb;
+        public UInt16 MajorRuntimeVersion;
+        public UInt16 MinorRuntimeVersion;
+        public ImageDataDirectory MetaData;
+        public ComImageFlags Flags;
+        public uint EntryPoint;
+        public ImageDataDirectory Resources;
+        public ImageDataDirectory StrongNameSignature;
+        public ImageDataDirectory CodeManagerTable;
+        public ImageDataDirectory VTableFixups;
+        public ImageDataDirectory ExportAddressTableJumps;
+        public ImageDataDirectory ManagedNativeHeader;
+    }
 }

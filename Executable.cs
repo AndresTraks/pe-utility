@@ -48,8 +48,21 @@ namespace PEUtility
 
         public ImportEntry[] ImportEntries;
         public ExportEntry[] ExportEntries;
+        public ImageCor20Header ClrHeader;
         public bool IsValid { get; set; }
         public string Filename { get; set; }
+
+        public String Type
+        {
+            get
+            {
+                if ((ClrHeader.Flags & ComImageFlags.ILOnly) != 0)
+                {
+                    return "Any CPU";
+                }
+                return _ntHeaders32.Is64Bit ? "64-bit" : "32-bit";
+            }
+        }
 
         private MemoryMappedViewAccessor GetSectionAccessor(int section)
         {
@@ -208,6 +221,7 @@ namespace PEUtility
 
             ReadImportTable();
             ReadExportTable();
+            ReadCorHeader();
 
             IsValid = true;
         }
@@ -346,6 +360,36 @@ namespace PEUtility
             }
 
             ExportEntries = exportEntries.ToArray();
+        }
+
+        private void ReadCorHeader()
+        {
+            long clrRuntimeHeader;
+            if (_ntHeaders32.Is64Bit)
+            {
+                clrRuntimeHeader = _ntHeaders64.OptionalHeader.CLRRuntimeHeader.VirtualAddress;
+            }
+            else
+            {
+                clrRuntimeHeader = _ntHeaders32.OptionalHeader.CLRRuntimeHeader.VirtualAddress;
+            }
+            if (clrRuntimeHeader == 0)
+            {
+                return;
+            }
+
+            clrRuntimeHeader = DecodeRva(clrRuntimeHeader);
+            try
+            {
+                var accessor = _file.CreateViewAccessor(clrRuntimeHeader, Marshal.SizeOf(typeof(ImageCor20Header)), MemoryMappedFileAccess.Read);
+                accessor.Read(0, out ClrHeader);
+                accessor.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "CLR Section Read Exception");
+                throw;
+            }
         }
 
         private int GetRvaSection(long rva)
