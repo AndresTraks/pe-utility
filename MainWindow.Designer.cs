@@ -214,7 +214,6 @@
             this.exportsList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.exportsList.LabelEdit = true;
             this.exportsList.Location = new System.Drawing.Point(7, 33);
             this.exportsList.Name = "exportsList";
             this.exportsList.Size = new System.Drawing.Size(506, 265);
