@@ -49,8 +49,17 @@ namespace PEUtility
     [StructLayout(LayoutKind.Sequential)]
     public struct ImageDataDirectory
     {
-        public UInt32 VirtualAddress;
-        public UInt32 Size;
+        public uint VirtualAddress;
+        public uint Size;
+
+        public override string ToString()
+        {
+            if (VirtualAddress == 0)
+            {
+                return "Directory: None";
+            }
+            return $"Directory: 0x{VirtualAddress:X} ({Size})";
+        }
     }
 
     public enum Subsystem : ushort
@@ -245,19 +254,65 @@ namespace PEUtility
         ComDescriptor = 14
     }
 
+    [Flags]
+    public enum ImageSectionCharacteristics : uint
+    {
+        None = 0x0,
+        TypeDSect = 0x1,
+        TypeNoLoad = 0x2,
+        TypeGroup = 0x4,
+        TypeNoPad = 0x8,
+        TypeCopy = 0x10,
+        ContainsCode = 0x20,
+        ContainsInitializedData = 0x40,
+        ContainsUninitializedData = 0x80,
+        LnkOther = 0x100,
+        LnkInfo = 0x200,
+        TypeOver = 0x400,
+        LnkRemove = 0x800,
+        LnkComdat = 0x1000,
+        MemoryFarData = 0x8000,
+        MemoryPurgeable = 0x20000,
+        Memory16Bit = 0x20000,
+        MemoryLocked = 0x40000,
+        MemoryPreload = 0x80000,
+        Align1Bytes = 0x100000,
+        Align2Bytes = 0x200000,
+        Align4Bytes = 0x300000,
+        Align8Bytes = 0x400000,
+        Align16Bytes = 0x500000,
+        Align32Bytes = 0x600000,
+        Align64Bytes = 0x700000,
+        Align128Bytes = 0x800000,
+        Align256Bytes = 0x900000,
+        Align512Bytes = 0xA00000,
+        Align1024Bytes = 0xB00000,
+        Align2048Bytes = 0xC00000,
+        Align4096Bytes = 0xD00000,
+        Align8192Bytes = 0xE00000,
+        LnkNRelocOvfl = 0x1000000,
+        MemoryDiscardable = 0x2000000,
+        MemoryNotCached = 0x4000000,
+        MemoryNotPaged = 0x8000000,
+        MemoryShared = 0x10000000,
+        MemoryExecute = 0x20000000,
+        MemoryRead = 0x40000000,
+        MemoryWrite = 0x80000000
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct ImageSectionHeader
     {
-        public UInt64 Name;
-        public UInt32 VirtualSize;
-        public UInt32 VirtualAddress;
-        public UInt32 SizeOfRawData;
-        public UInt32 PointerToRawData;
-        public UInt32 PointerToRelocations;
-        public UInt32 PointerToLinenumbers;
-        public UInt16 NumberOfRelocations;
-        public UInt16 NumberOfLinenumbers;
-        public UInt32 Characteristics;
+        public ulong Name;
+        public uint VirtualSize;
+        public uint VirtualAddress;
+        public uint SizeOfRawData;
+        public uint PointerToRawData;
+        public uint PointerToRelocations;
+        public uint PointerToLinenumbers;
+        public ushort NumberOfRelocations;
+        public ushort NumberOfLinenumbers;
+        public ImageSectionCharacteristics Characteristics;
 
         public string Section
         {

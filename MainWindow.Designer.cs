@@ -38,6 +38,8 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.infoTab = new System.Windows.Forms.TabPage();
+            this.typeValueLabel = new System.Windows.Forms.Label();
+            this.typeLabel = new System.Windows.Forms.Label();
             this.importsTab = new System.Windows.Forms.TabPage();
             this.importsList = new System.Windows.Forms.TreeView();
             this.filterLabel2 = new System.Windows.Forms.Label();
@@ -49,8 +51,7 @@
             this.tabControlImageList = new System.Windows.Forms.ImageList(this.components);
             this.treeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.typeLabel = new System.Windows.Forms.Label();
-            this.typeValueLabel = new System.Windows.Forms.Label();
+            this.copyFunctionAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.infoTab.SuspendLayout();
@@ -133,6 +134,23 @@
             this.infoTab.TabIndex = 2;
             this.infoTab.Text = "Info";
             this.infoTab.UseVisualStyleBackColor = true;
+            // 
+            // typeValueLabel
+            // 
+            this.typeValueLabel.AutoSize = true;
+            this.typeValueLabel.Location = new System.Drawing.Point(189, 7);
+            this.typeValueLabel.Name = "typeValueLabel";
+            this.typeValueLabel.Size = new System.Drawing.Size(0, 13);
+            this.typeValueLabel.TabIndex = 1;
+            // 
+            // typeLabel
+            // 
+            this.typeLabel.AutoSize = true;
+            this.typeLabel.Location = new System.Drawing.Point(6, 10);
+            this.typeLabel.Name = "typeLabel";
+            this.typeLabel.Size = new System.Drawing.Size(31, 13);
+            this.typeLabel.TabIndex = 0;
+            this.typeLabel.Text = "Type";
             // 
             // importsTab
             // 
@@ -232,33 +250,24 @@
             // treeContextMenu
             // 
             this.treeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyNameToolStripMenuItem});
+            this.copyNameToolStripMenuItem,
+            this.copyFunctionAddressMenuItem});
             this.treeContextMenu.Name = "importsContextMenu";
-            this.treeContextMenu.Size = new System.Drawing.Size(136, 26);
+            this.treeContextMenu.Size = new System.Drawing.Size(194, 70);
             // 
             // copyNameToolStripMenuItem
             // 
             this.copyNameToolStripMenuItem.Name = "copyNameToolStripMenuItem";
-            this.copyNameToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.copyNameToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.copyNameToolStripMenuItem.Text = "Copy name";
             this.copyNameToolStripMenuItem.Click += new System.EventHandler(this.copyNameToolStripMenuItem_Click);
             // 
-            // typeLabel
+            // copyFunctionAddressMenuItem
             // 
-            this.typeLabel.AutoSize = true;
-            this.typeLabel.Location = new System.Drawing.Point(6, 10);
-            this.typeLabel.Name = "typeLabel";
-            this.typeLabel.Size = new System.Drawing.Size(31, 13);
-            this.typeLabel.TabIndex = 0;
-            this.typeLabel.Text = "Type";
-            // 
-            // typeValueLabel
-            // 
-            this.typeValueLabel.AutoSize = true;
-            this.typeValueLabel.Location = new System.Drawing.Point(189, 7);
-            this.typeValueLabel.Name = "typeValueLabel";
-            this.typeValueLabel.Size = new System.Drawing.Size(0, 13);
-            this.typeValueLabel.TabIndex = 1;
+            this.copyFunctionAddressMenuItem.Name = "copyFunctionAddressMenuItem";
+            this.copyFunctionAddressMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.copyFunctionAddressMenuItem.Text = "Copy function address";
+            this.copyFunctionAddressMenuItem.Click += new System.EventHandler(this.copyFunctionAddressMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -309,6 +318,7 @@
         private System.Windows.Forms.TabPage infoTab;
         private System.Windows.Forms.Label typeValueLabel;
         private System.Windows.Forms.Label typeLabel;
+        private System.Windows.Forms.ToolStripMenuItem copyFunctionAddressMenuItem;
     }
 }
 

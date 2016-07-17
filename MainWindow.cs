@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Drawing;
 
 namespace PEUtility
 {
@@ -11,6 +12,7 @@ namespace PEUtility
     {
         private Executable _executable;
         private const int NumRecentFiles = 10;
+        private List<ListViewItem> _exportItems;
 
         public MainWindow(string argument)
         {
@@ -129,18 +131,13 @@ namespace PEUtility
             }
         }
 
-        void exportSearchBox_TextChanged(object sender, EventArgs e)
+        void exportSearchBox_TextChanged(object sender, EventArgs args)
         {
+            string searchText = exportSearchBox.Text;
             exportsList.Clear();
-            //var entries = _executable.ExportEntries.Where(i => i.Name.IndexOf(exportSearchBox.Text, StringComparison.OrdinalIgnoreCase) != -1);
-            //exportsList.Items.AddRange(entries.Select(i => new ListViewItem(i.Name)).ToArray());
-            foreach (var exportEntry in _executable.ExportEntries)
-            {
-                if (exportEntry.Name.IndexOf(exportSearchBox.Text, StringComparison.OrdinalIgnoreCase) != -1)
-                {
-                    exportsList.Items.Add(exportEntry.Name);
-                }
-            }
+            var entries = _exportItems
+                .Where(e => e.Text.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            exportsList.Items.AddRange(entries.ToArray());
         }
 
         void MainWindow_DragDrop(object sender, DragEventArgs e)
@@ -203,10 +200,13 @@ namespace PEUtility
 
             // Exports
             exportsList.Clear();
-            foreach (var exportEntry in _executable.ExportEntries)
-            {
-                exportsList.Items.Add(exportEntry.Name);
-            }
+            _exportItems = _executable.ExportEntries.Select(entry => {
+                return new ListViewItem(entry.Name)
+                {
+                    Tag = entry
+                };
+                }).ToList();
+            exportsList.Items.AddRange(_exportItems.ToArray());
             exportSearchBox.Enabled = true;
         }
 
@@ -232,6 +232,9 @@ namespace PEUtility
                 {
                     treeContextMenu.Tag = exportsList.FocusedItem;
                     treeContextMenu.Show(exportsList, e.Location);
+
+                    //var exportEntry = exportsList.FocusedItem.Tag as ExportEntry;
+                    //treeContextMenu.Items.Add($"{exportEntry.Address:X}");
                 }
             }
         }
@@ -254,6 +257,16 @@ namespace PEUtility
                 _executable.Close();
 
             Close();
+        }
+
+        private void copyFunctionAddressMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeContextMenu.Tag is ListViewItem)
+            {
+                var listItem = treeContextMenu.Tag as ListViewItem;
+                var exportEntry = listItem.Tag as ExportEntry;
+                Clipboard.SetText($"{exportEntry.Address:X}");
+            }
         }
     }
 }
