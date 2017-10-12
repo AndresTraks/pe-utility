@@ -27,6 +27,8 @@ namespace PEUtility
             importsList.MouseUp += importsList_MouseUp;
             exportsList.MouseUp += exportsList_MouseUp;
 
+            exportsList.SelectedIndexChanged += ExportsList_SelectedIndexChanged;
+
             ReadRecentFiles();
             if (argument != null)
             {
@@ -179,15 +181,18 @@ namespace PEUtility
 
         private void OpenFile(string filename)
         {
-            if (_executable != null)
-                _executable.Close();
-
             var newExecutable = new Executable(filename);
             if (!newExecutable.IsValid)
                 return;
 
+            if (_executable != null)
+            {
+                _executable.Close();
+            }
             _executable = newExecutable;
             Text = Path.GetFileName(filename) + " - PE Disassembler";
+
+            ResetFunctionInfo();
 
             StoreRecentFile();
 
@@ -200,7 +205,9 @@ namespace PEUtility
 
             // Exports
             exportsList.Clear();
-            _exportItems = _executable.ExportEntries.Select(entry => {
+            _exportItems = _executable.ExportEntries
+                .OrderBy(entry => entry.Name)
+                .Select(entry => {
                 return new ListViewItem(entry.Name)
                 {
                     Tag = entry
@@ -208,6 +215,12 @@ namespace PEUtility
                 }).ToList();
             exportsList.Items.AddRange(_exportItems.ToArray());
             exportSearchBox.Enabled = true;
+        }
+
+        private void ResetFunctionInfo()
+        {
+            functionNameTextBox.Clear();
+            functionAddressTextBox.Clear();
         }
 
         void importsList_MouseUp(object sender, MouseEventArgs e)
@@ -266,6 +279,18 @@ namespace PEUtility
                 var listItem = treeContextMenu.Tag as ListViewItem;
                 var exportEntry = listItem.Tag as ExportEntry;
                 Clipboard.SetText($"{exportEntry.Address:X}");
+            }
+        }
+
+        private void ExportsList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListViewItem focusedItem = exportsList.FocusedItem;
+            if (focusedItem != null)
+            {
+                var exportEntry = focusedItem.Tag as ExportEntry;
+                functionNameTextBox.Text = exportEntry.Name;
+                long address = exportEntry.Address;
+                functionAddressTextBox.Text = $"0x{address:X}";
             }
         }
     }

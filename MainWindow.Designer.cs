@@ -45,6 +45,7 @@
             this.filterLabel2 = new System.Windows.Forms.Label();
             this.importSearchBox = new System.Windows.Forms.TextBox();
             this.exportsTab = new System.Windows.Forms.TabPage();
+            this.functionInfoPanel = new System.Windows.Forms.Panel();
             this.filterLabel1 = new System.Windows.Forms.Label();
             this.exportSearchBox = new System.Windows.Forms.TextBox();
             this.exportsList = new System.Windows.Forms.ListView();
@@ -52,11 +53,16 @@
             this.treeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyFunctionAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.functionNameLabel = new System.Windows.Forms.Label();
+            this.functionAddressLabel = new System.Windows.Forms.Label();
+            this.functionNameTextBox = new System.Windows.Forms.TextBox();
+            this.functionAddressTextBox = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.infoTab.SuspendLayout();
             this.importsTab.SuspendLayout();
             this.exportsTab.SuspendLayout();
+            this.functionInfoPanel.SuspendLayout();
             this.treeContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,7 +72,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(527, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(624, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -119,7 +125,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(529, 334);
+            this.tabControl.Size = new System.Drawing.Size(626, 435);
             this.tabControl.TabIndex = 1;
             // 
             // infoTab
@@ -130,7 +136,7 @@
             this.infoTab.Location = new System.Drawing.Point(4, 27);
             this.infoTab.Name = "infoTab";
             this.infoTab.Padding = new System.Windows.Forms.Padding(3);
-            this.infoTab.Size = new System.Drawing.Size(521, 303);
+            this.infoTab.Size = new System.Drawing.Size(618, 404);
             this.infoTab.TabIndex = 2;
             this.infoTab.Text = "Info";
             this.infoTab.UseVisualStyleBackColor = true;
@@ -161,16 +167,19 @@
             this.importsTab.Location = new System.Drawing.Point(4, 27);
             this.importsTab.Name = "importsTab";
             this.importsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.importsTab.Size = new System.Drawing.Size(521, 303);
+            this.importsTab.Size = new System.Drawing.Size(618, 404);
             this.importsTab.TabIndex = 0;
             this.importsTab.Text = "Imports";
             this.importsTab.UseVisualStyleBackColor = true;
             // 
             // importsList
             // 
+            this.importsList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.importsList.Location = new System.Drawing.Point(7, 33);
             this.importsList.Name = "importsList";
-            this.importsList.Size = new System.Drawing.Size(506, 265);
+            this.importsList.Size = new System.Drawing.Size(603, 365);
             this.importsList.TabIndex = 6;
             // 
             // filterLabel2
@@ -190,11 +199,12 @@
             this.importSearchBox.Enabled = false;
             this.importSearchBox.Location = new System.Drawing.Point(41, 7);
             this.importSearchBox.Name = "importSearchBox";
-            this.importSearchBox.Size = new System.Drawing.Size(472, 20);
+            this.importSearchBox.Size = new System.Drawing.Size(569, 20);
             this.importSearchBox.TabIndex = 4;
             // 
             // exportsTab
             // 
+            this.exportsTab.Controls.Add(this.functionInfoPanel);
             this.exportsTab.Controls.Add(this.filterLabel1);
             this.exportsTab.Controls.Add(this.exportSearchBox);
             this.exportsTab.Controls.Add(this.exportsList);
@@ -202,10 +212,23 @@
             this.exportsTab.Location = new System.Drawing.Point(4, 27);
             this.exportsTab.Name = "exportsTab";
             this.exportsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.exportsTab.Size = new System.Drawing.Size(521, 303);
+            this.exportsTab.Size = new System.Drawing.Size(618, 404);
             this.exportsTab.TabIndex = 1;
             this.exportsTab.Text = "Exports";
             this.exportsTab.UseVisualStyleBackColor = true;
+            // 
+            // functionInfoPanel
+            // 
+            this.functionInfoPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.functionInfoPanel.Controls.Add(this.functionAddressTextBox);
+            this.functionInfoPanel.Controls.Add(this.functionNameTextBox);
+            this.functionInfoPanel.Controls.Add(this.functionAddressLabel);
+            this.functionInfoPanel.Controls.Add(this.functionNameLabel);
+            this.functionInfoPanel.Location = new System.Drawing.Point(7, 340);
+            this.functionInfoPanel.Name = "functionInfoPanel";
+            this.functionInfoPanel.Size = new System.Drawing.Size(603, 58);
+            this.functionInfoPanel.TabIndex = 3;
             // 
             // filterLabel1
             // 
@@ -224,7 +247,7 @@
             this.exportSearchBox.Enabled = false;
             this.exportSearchBox.Location = new System.Drawing.Point(41, 7);
             this.exportSearchBox.Name = "exportSearchBox";
-            this.exportSearchBox.Size = new System.Drawing.Size(472, 20);
+            this.exportSearchBox.Size = new System.Drawing.Size(569, 20);
             this.exportSearchBox.TabIndex = 1;
             // 
             // exportsList
@@ -234,7 +257,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.exportsList.Location = new System.Drawing.Point(7, 33);
             this.exportsList.Name = "exportsList";
-            this.exportsList.Size = new System.Drawing.Size(506, 265);
+            this.exportsList.Size = new System.Drawing.Size(603, 300);
             this.exportsList.TabIndex = 0;
             this.exportsList.UseCompatibleStateImageBehavior = false;
             this.exportsList.View = System.Windows.Forms.View.List;
@@ -253,7 +276,7 @@
             this.copyNameToolStripMenuItem,
             this.copyFunctionAddressMenuItem});
             this.treeContextMenu.Name = "importsContextMenu";
-            this.treeContextMenu.Size = new System.Drawing.Size(194, 70);
+            this.treeContextMenu.Size = new System.Drawing.Size(194, 48);
             // 
             // copyNameToolStripMenuItem
             // 
@@ -269,12 +292,50 @@
             this.copyFunctionAddressMenuItem.Text = "Copy function address";
             this.copyFunctionAddressMenuItem.Click += new System.EventHandler(this.copyFunctionAddressMenuItem_Click);
             // 
+            // functionNameLabel
+            // 
+            this.functionNameLabel.AutoSize = true;
+            this.functionNameLabel.Location = new System.Drawing.Point(3, 7);
+            this.functionNameLabel.Name = "functionNameLabel";
+            this.functionNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.functionNameLabel.TabIndex = 0;
+            this.functionNameLabel.Text = "Name:";
+            // 
+            // functionAddressLabel
+            // 
+            this.functionAddressLabel.AutoSize = true;
+            this.functionAddressLabel.Location = new System.Drawing.Point(3, 33);
+            this.functionAddressLabel.Name = "functionAddressLabel";
+            this.functionAddressLabel.Size = new System.Drawing.Size(48, 13);
+            this.functionAddressLabel.TabIndex = 1;
+            this.functionAddressLabel.Text = "Address:";
+            // 
+            // functionNameTextBox
+            // 
+            this.functionNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.functionNameTextBox.Location = new System.Drawing.Point(59, 4);
+            this.functionNameTextBox.Name = "functionNameTextBox";
+            this.functionNameTextBox.ReadOnly = true;
+            this.functionNameTextBox.Size = new System.Drawing.Size(541, 20);
+            this.functionNameTextBox.TabIndex = 2;
+            // 
+            // functionAddressTextBox
+            // 
+            this.functionAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.functionAddressTextBox.Location = new System.Drawing.Point(59, 30);
+            this.functionAddressTextBox.Name = "functionAddressTextBox";
+            this.functionAddressTextBox.ReadOnly = true;
+            this.functionAddressTextBox.Size = new System.Drawing.Size(541, 20);
+            this.functionAddressTextBox.TabIndex = 3;
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(527, 360);
+            this.ClientSize = new System.Drawing.Size(624, 461);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -289,6 +350,8 @@
             this.importsTab.PerformLayout();
             this.exportsTab.ResumeLayout(false);
             this.exportsTab.PerformLayout();
+            this.functionInfoPanel.ResumeLayout(false);
+            this.functionInfoPanel.PerformLayout();
             this.treeContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -319,6 +382,11 @@
         private System.Windows.Forms.Label typeValueLabel;
         private System.Windows.Forms.Label typeLabel;
         private System.Windows.Forms.ToolStripMenuItem copyFunctionAddressMenuItem;
+        private System.Windows.Forms.Panel functionInfoPanel;
+        private System.Windows.Forms.Label functionAddressLabel;
+        private System.Windows.Forms.Label functionNameLabel;
+        private System.Windows.Forms.TextBox functionAddressTextBox;
+        private System.Windows.Forms.TextBox functionNameTextBox;
     }
 }
 
