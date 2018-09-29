@@ -46,6 +46,10 @@
             this.importSearchBox = new System.Windows.Forms.TextBox();
             this.exportsTab = new System.Windows.Forms.TabPage();
             this.functionInfoPanel = new System.Windows.Forms.Panel();
+            this.functionAddressTextBox = new System.Windows.Forms.TextBox();
+            this.functionNameTextBox = new System.Windows.Forms.TextBox();
+            this.functionAddressLabel = new System.Windows.Forms.Label();
+            this.functionNameLabel = new System.Windows.Forms.Label();
             this.filterLabel1 = new System.Windows.Forms.Label();
             this.exportSearchBox = new System.Windows.Forms.TextBox();
             this.exportsList = new System.Windows.Forms.ListView();
@@ -53,10 +57,6 @@
             this.treeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyFunctionAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.functionNameLabel = new System.Windows.Forms.Label();
-            this.functionAddressLabel = new System.Windows.Forms.Label();
-            this.functionNameTextBox = new System.Windows.Forms.TextBox();
-            this.functionAddressTextBox = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.infoTab.SuspendLayout();
@@ -230,6 +230,44 @@
             this.functionInfoPanel.Size = new System.Drawing.Size(603, 58);
             this.functionInfoPanel.TabIndex = 3;
             // 
+            // functionAddressTextBox
+            // 
+            this.functionAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.functionAddressTextBox.Location = new System.Drawing.Point(59, 30);
+            this.functionAddressTextBox.Name = "functionAddressTextBox";
+            this.functionAddressTextBox.ReadOnly = true;
+            this.functionAddressTextBox.Size = new System.Drawing.Size(541, 20);
+            this.functionAddressTextBox.TabIndex = 3;
+            // 
+            // functionNameTextBox
+            // 
+            this.functionNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.functionNameTextBox.Location = new System.Drawing.Point(59, 4);
+            this.functionNameTextBox.Name = "functionNameTextBox";
+            this.functionNameTextBox.ReadOnly = true;
+            this.functionNameTextBox.Size = new System.Drawing.Size(541, 20);
+            this.functionNameTextBox.TabIndex = 2;
+            // 
+            // functionAddressLabel
+            // 
+            this.functionAddressLabel.AutoSize = true;
+            this.functionAddressLabel.Location = new System.Drawing.Point(3, 33);
+            this.functionAddressLabel.Name = "functionAddressLabel";
+            this.functionAddressLabel.Size = new System.Drawing.Size(48, 13);
+            this.functionAddressLabel.TabIndex = 1;
+            this.functionAddressLabel.Text = "Address:";
+            // 
+            // functionNameLabel
+            // 
+            this.functionNameLabel.AutoSize = true;
+            this.functionNameLabel.Location = new System.Drawing.Point(3, 7);
+            this.functionNameLabel.Name = "functionNameLabel";
+            this.functionNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.functionNameLabel.TabIndex = 0;
+            this.functionNameLabel.Text = "Name:";
+            // 
             // filterLabel1
             // 
             this.filterLabel1.AutoSize = true;
@@ -292,44 +330,6 @@
             this.copyFunctionAddressMenuItem.Text = "Copy function address";
             this.copyFunctionAddressMenuItem.Click += new System.EventHandler(this.copyFunctionAddressMenuItem_Click);
             // 
-            // functionNameLabel
-            // 
-            this.functionNameLabel.AutoSize = true;
-            this.functionNameLabel.Location = new System.Drawing.Point(3, 7);
-            this.functionNameLabel.Name = "functionNameLabel";
-            this.functionNameLabel.Size = new System.Drawing.Size(38, 13);
-            this.functionNameLabel.TabIndex = 0;
-            this.functionNameLabel.Text = "Name:";
-            // 
-            // functionAddressLabel
-            // 
-            this.functionAddressLabel.AutoSize = true;
-            this.functionAddressLabel.Location = new System.Drawing.Point(3, 33);
-            this.functionAddressLabel.Name = "functionAddressLabel";
-            this.functionAddressLabel.Size = new System.Drawing.Size(48, 13);
-            this.functionAddressLabel.TabIndex = 1;
-            this.functionAddressLabel.Text = "Address:";
-            // 
-            // functionNameTextBox
-            // 
-            this.functionNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.functionNameTextBox.Location = new System.Drawing.Point(59, 4);
-            this.functionNameTextBox.Name = "functionNameTextBox";
-            this.functionNameTextBox.ReadOnly = true;
-            this.functionNameTextBox.Size = new System.Drawing.Size(541, 20);
-            this.functionNameTextBox.TabIndex = 2;
-            // 
-            // functionAddressTextBox
-            // 
-            this.functionAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.functionAddressTextBox.Location = new System.Drawing.Point(59, 30);
-            this.functionAddressTextBox.Name = "functionAddressTextBox";
-            this.functionAddressTextBox.ReadOnly = true;
-            this.functionAddressTextBox.Size = new System.Drawing.Size(541, 20);
-            this.functionAddressTextBox.TabIndex = 3;
-            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -340,7 +340,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainWindow";
-            this.Text = "PE Disassembler";
+            this.Text = "PE Utility";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl.ResumeLayout(false);

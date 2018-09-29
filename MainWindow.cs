@@ -10,6 +10,8 @@ namespace PEUtility
 {
     public partial class MainWindow : Form
     {
+        private const string WindowTitle = "PE Utility";
+
         private Executable _executable;
         private const int NumRecentFiles = 10;
         private List<ListViewItem> _exportItems;
@@ -179,18 +181,28 @@ namespace PEUtility
             }
         }
 
-        private void OpenFile(string filename)
+        private void OpenFile(string fileName)
         {
-            var newExecutable = new Executable(filename);
+            Executable newExecutable;
+            try
+            {
+                newExecutable = new Executable(fileName);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Couldn't open " + fileName + "\n" + e.Message, "Error");
+                return;
+            }
+
             if (!newExecutable.IsValid)
                 return;
 
             if (_executable != null)
             {
-                _executable.Close();
+                _executable.Dispose();
             }
             _executable = newExecutable;
-            Text = Path.GetFileName(filename) + " - PE Disassembler";
+            Text = Path.GetFileName(fileName) + " - " + WindowTitle;
 
             ResetFunctionInfo();
 
@@ -267,7 +279,7 @@ namespace PEUtility
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_executable != null)
-                _executable.Close();
+                _executable.Dispose();
 
             Close();
         }

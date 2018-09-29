@@ -59,12 +59,12 @@ namespace PEUtility
 
             // Name addresses
             var addressOfNames = _executable.DecodeRva(exportDirectory.AddressOfNames, namesSection);
-            _namesAccessor = _executable.GetFileAccessor(addressOfNames, numNames * sizeof(uint));
+            _namesAccessor = _executable.Reader.GetAccessor(addressOfNames, numNames * sizeof(uint));
 
             // Funtions section
             var functionsSection = _executable.GetRvaSection(exportDirectory.AddressOfFunctions);
             var addressOfFunctions = _executable.DecodeRva(exportDirectory.AddressOfFunctions, functionsSection);
-            _functionsAccessor = _executable.GetFileAccessor(addressOfFunctions, numFunctions * sizeof(uint));
+            _functionsAccessor = _executable.Reader.GetAccessor(addressOfFunctions, numFunctions * sizeof(uint));
 
             var exportEntries = new ExportEntry[numNames];
             for (int i = 0; i < numNames; i++)
@@ -82,7 +82,7 @@ namespace PEUtility
 
         private void ReadExportDirectory(out ImageExportDirectory exportDirectory)
         {
-            using (var accessor = _executable.GetFileAccessor(_executable.DecodeRva(_exportTableAddress),
+            using (var accessor = _executable.Reader.GetAccessor(_executable.DecodeRva(_exportTableAddress),
                 Marshal.SizeOf(typeof(ImageExportDirectory))))
             {
                 accessor.Read(0, out exportDirectory);

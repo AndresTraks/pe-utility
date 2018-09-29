@@ -24,19 +24,19 @@ namespace PEUtility
         }
     }
 
-    class Executable
+    public sealed class Executable : IDisposable
     {
         private ImageNtHeaders32 _ntHeaders32;
         private ImageNtHeaders64 _ntHeaders64;
 
-        public ImportEntry[] ImportEntries;
-        public ExportEntry[] ExportEntries;
-        public ImageCor20Header ClrHeader;
+        public ImportEntry[] ImportEntries { get; private set; }
+        public ExportEntry[] ExportEntries { get; private set; }
+        public ImageCor20Header ClrHeader { get; private set; }
 
-        public bool IsValid { get; set; }
-        public string Filename { get; set; }
-        public MemoryMappedFile File { get; set; }
-        public ImageSectionHeader[] Sections { get; set; }
+        public bool IsValid { get; }
+        public string Filename { get; }
+        public ExecutableReader Reader { get; }
+        public ImageSectionHeader[] Sections { get; private set; }
 
         public string Type
         {
@@ -46,18 +46,15 @@ namespace PEUtility
                 {
                     return "Any CPU";
                 }
-                return _ntHeaders32.Is64Bit ? "64-bit" : "32-bit";
+                return Is64Bit ? "64-bit" : "32-bit";
             }
         }
 
-        public MemoryMappedViewAccessor GetFileAccessor(long offset, long size)
-        {
-            return File.CreateViewAccessor(offset, size, MemoryMappedFileAccess.Read);
-        }
+        public bool Is64Bit => _ntHeaders32.Is64Bit;
 
         public MemoryMappedViewAccessor GetSectionAccessor(int section)
         {
-            return GetFileAccessor(Sections[section].PointerToRawData, Sections[section].SizeOfRawData);
+            return Reader.GetAccessor(Sections[section].PointerToRawData, Sections[section].SizeOfRawData);
         }
 
         private string ReadStringFromFile(long rva)
@@ -86,141 +83,42 @@ namespace PEUtility
             return new string(bytes.ToArray());
         }
 
-        private ushort ReadUInt16(long address)
+        public Executable(string fileName)
         {
-            using (var accessor = GetFileAccessor(address, sizeof(short)))
-            {
-                return accessor.ReadUInt16(0);
-            }
-        }
+            Filename = fileName;
+            Reader = new ExecutableReader(fileName);
 
-        private uint ReadUInt32(long address)
-        {
-            using (var accessor = GetFileAccessor(address, sizeof (uint)))
-            {
-                return accessor.ReadUInt32(0);
-            }
-        }
-
-        private long ReadInt64(long address)
-        {
-            using (var accessor = GetFileAccessor(address, sizeof (long)))
-            {
-                return accessor.ReadInt64(0);
-            }
-        }
-
-        private ulong ReadUInt64(long address)
-        {
-            using (var accessor = GetFileAccessor(address, sizeof(ulong)))
-            {
-                return accessor.ReadUInt64(0);
-            }
-        }
-
-        public Executable(string filename)
-        {
-            Filename = filename;
-
-            try
-            {
-                File = MemoryMappedFile.CreateFromFile(filename, FileMode.Open);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Couldn't open " + filename + "\n" + e.Message, "Error");
-                return;
-            }
-
-            ImageDosHeader header;
-            try
-            {
-                using (var accessor = GetFileAccessor(0, Marshal.SizeOf(typeof(ImageDosHeader))))
-                {
-                    accessor.Read(0, out header);
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "DOS Header Read Exception");
-                return;
-            }
-
+            var header = Reader.ReadStruct<ImageDosHeader>(0);
             if (!header.IsValid)
             {
-                MessageBox.Show("Invalid PE header for " + filename, "Invalid PE header");
+                MessageBox.Show("Invalid PE header for " + fileName, "Invalid PE header");
                 return;
             }
 
-            try
-            {
-                using (var accessor = GetFileAccessor(header.LfaNewHeader, Marshal.SizeOf(typeof(ImageNtHeaders32))))
-                {
-                    accessor.Read(0, out _ntHeaders32);
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "NT Headers Read Exception");
-                return;
-            }
-
+            _ntHeaders32 = Reader.ReadStruct<ImageNtHeaders32>(header.LfaNewHeader);
             if (!_ntHeaders32.IsValid)
             {
-                MessageBox.Show("Invalid PE header for " + filename, "Invalid PE header");
+                MessageBox.Show("Invalid PE header for " + fileName, "Invalid PE header");
                 return;
             }
 
             if (_ntHeaders32.Is64Bit)
             {
-                try
-                {
-                    using (var accessor = GetFileAccessor(header.LfaNewHeader, Marshal.SizeOf(typeof(ImageNtHeaders64))))
-                    {
-                        accessor.Read(0, out _ntHeaders64);
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, "NT Headers Header Exception");
-                    return;
-                }
+                _ntHeaders64 = Reader.ReadStruct<ImageNtHeaders64>(header.LfaNewHeader);
             }
 
             // Read sections
-            if (_ntHeaders32.Is64Bit)
+            if (Is64Bit)
             {
-                Sections = new ImageSectionHeader[_ntHeaders64.FileHeader.NumberOfSections];
-                try
-                {
-                    using (var accessor = GetFileAccessor(header.LfaNewHeader + Marshal.SizeOf(typeof(ImageNtHeaders64)),
-                        _ntHeaders64.FileHeader.NumberOfSections * Marshal.SizeOf(typeof(ImageSectionHeader))))
-                    {
-                        accessor.ReadArray(0, Sections, 0, _ntHeaders64.FileHeader.NumberOfSections);
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, "Section Read Exception");
-                    throw;
-                }
+                Sections = Reader.ReadStructArray<ImageSectionHeader>(
+                    header.LfaNewHeader + Marshal.SizeOf(typeof(ImageNtHeaders64)),
+                    _ntHeaders64.FileHeader.NumberOfSections);
             }
             else
             {
-                Sections = new ImageSectionHeader[_ntHeaders32.FileHeader.NumberOfSections];
-                try
-                {
-                    using (var accessor = GetFileAccessor(header.LfaNewHeader + Marshal.SizeOf(typeof(ImageNtHeaders32)),
-                        _ntHeaders32.FileHeader.NumberOfSections * Marshal.SizeOf(typeof(ImageSectionHeader))))
-                    {
-                        accessor.ReadArray(0, Sections, 0, _ntHeaders32.FileHeader.NumberOfSections);
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, "Section Read Exception");
-                    throw;
-                }
+                Sections = Reader.ReadStructArray<ImageSectionHeader>(
+                    header.LfaNewHeader + Marshal.SizeOf(typeof(ImageNtHeaders32)),
+                    _ntHeaders32.FileHeader.NumberOfSections);
             }
 
             ReadImportTable();
@@ -238,13 +136,14 @@ namespace PEUtility
 
             ReadCorHeader();
 
+            Reader.Close();
             IsValid = true;
         }
 
         private void ReadImportTable()
         {
             long importTable;
-            if (_ntHeaders32.Is64Bit)
+            if (Is64Bit)
             {
                 importTable = _ntHeaders64.OptionalHeader.ImportTable.VirtualAddress;
             }
@@ -261,11 +160,7 @@ namespace PEUtility
             importTable = DecodeRva(importTable);
             try
             {
-                ImageImportDescriptor importDescriptor;
-                using (var accessor = GetFileAccessor(importTable, Marshal.SizeOf(typeof(ImageImportDescriptor))))
-                {
-                    accessor.Read(0, out importDescriptor);
-                }
+                ImageImportDescriptor importDescriptor = Reader.ReadStruct<ImageImportDescriptor>(importTable);
 
                 var importEntries = new List<ImportEntry>();
                 while (importDescriptor.Characteristics != 0 || importDescriptor.FirstThunk != 0 ||
@@ -279,10 +174,10 @@ namespace PEUtility
                     long entryAddress = (importDescriptor.Characteristics != 0) ? importDescriptor.Characteristics : importDescriptor.FirstThunk;
                     entryAddress = DecodeRva(entryAddress);
 
-                    ulong thunk = _ntHeaders32.Is64Bit ? ReadUInt64(entryAddress) : ReadUInt32(entryAddress);
+                    ulong thunk = Is64Bit ? Reader.ReadUInt64(entryAddress) : Reader.ReadUInt32(entryAddress);
                     while (thunk != 0)
                     {
-                        ushort hint = ReadUInt16(entryAddress);
+                        ushort hint = Reader.ReadUInt16(entryAddress);
 
                         if ((thunk & 0x8000000000000000) != 0)
                         {
@@ -300,15 +195,12 @@ namespace PEUtility
                             importEntry.Entries.Add(importName);
                         }
                         
-                        entryAddress += _ntHeaders32.Is64Bit ? sizeof(ulong) : sizeof(uint);
-                        thunk = _ntHeaders32.Is64Bit ? ReadUInt64(entryAddress) : ReadUInt32(entryAddress);
+                        entryAddress += Is64Bit ? sizeof(ulong) : sizeof(uint);
+                        thunk = Is64Bit ? Reader.ReadUInt64(entryAddress) : Reader.ReadUInt32(entryAddress);
                     }
 
                     importTable += (uint)Marshal.SizeOf(typeof(ImageImportDescriptor));
-                    using (var descAccessor = GetFileAccessor(importTable, Marshal.SizeOf(typeof(ImageImportDescriptor))))
-                    {
-                        descAccessor.Read(0, out importDescriptor);
-                    }
+                    importDescriptor = Reader.ReadStruct<ImageImportDescriptor>(importTable);
                 }
                 ImportEntries = importEntries.ToArray();
             }
@@ -322,7 +214,7 @@ namespace PEUtility
         private void ReadCorHeader()
         {
             long clrRuntimeHeader;
-            if (_ntHeaders32.Is64Bit)
+            if (Is64Bit)
             {
                 clrRuntimeHeader = _ntHeaders64.OptionalHeader.CLRRuntimeHeader.VirtualAddress;
             }
@@ -336,23 +228,12 @@ namespace PEUtility
             }
 
             clrRuntimeHeader = DecodeRva(clrRuntimeHeader);
-            try
-            {
-                using (var accessor = GetFileAccessor(clrRuntimeHeader, Marshal.SizeOf(typeof(ImageCor20Header))))
-                {
-                    accessor.Read(0, out ClrHeader);
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "CLR Section Read Exception");
-                throw;
-            }
+            ClrHeader = Reader.ReadStruct<ImageCor20Header>(clrRuntimeHeader);
         }
 
         public uint GetExportTableAddress()
         {
-            if (_ntHeaders32.Is64Bit)
+            if (Is64Bit)
             {
                 return _ntHeaders64.OptionalHeader.ExportTable.VirtualAddress;
             }
@@ -364,8 +245,7 @@ namespace PEUtility
 
         public int GetRvaSection(long rva)
         {
-            int i;
-            for (i = 0; i < Sections.Length; i++)
+            for (int i = 0; i < Sections.Length; i++)
             {
                 if (rva >= Sections[i].VirtualAddress &&
                     rva < Sections[i].VirtualAddress + Sections[i].SizeOfRawData)
@@ -373,15 +253,14 @@ namespace PEUtility
                     return i;
                 }
             }
-            return -1;
+
+            throw new ArgumentOutOfRangeException($"Unknown relative virtual address: {rva}");
         }
 
         // Decode Relative Virtual Address
         public long DecodeRva(long rva)
         {
             int section = GetRvaSection(rva);
-            if (section == -1)
-                return 0;
             return DecodeRva(rva, section);
         }
 
@@ -390,9 +269,9 @@ namespace PEUtility
             return Sections[section].PointerToRawData + (rva - Sections[section].VirtualAddress);
         }
 
-        internal void Close()
+        public void Dispose()
         {
-            File.Dispose();
+            Reader.Dispose();
         }
     }
 }
